@@ -18,20 +18,29 @@
       constructor(props) {
         super(props);
         this.state = {
-          index: 0
+          index: 0,
+          width: 50,
         }
       }
-     
+
       componentDidMount() {
-        setInterval(() => {
+        this.intervalId = setInterval(() => {
           this.setState(state => ({
-            index: (state.index + 1) % images.length
-					})) 
-        }, 1000)
+            index: (state.index + 1) % images.length,
+					}))
+        }, 1000);
       }
-   
+
       render() {
-        return <img src={images[this.state.index]} />
+        return (<div>
+          <input min="50" max="500" step="25" type="range" onChange={(ev) => {
+
+            this.setState({
+              width: ev.target.value
+            })
+          }} style={{display: 'block'}} />
+          <img src={images[this.state.index]} width={this.state.width} />
+        </div>);
       }
 
     }
