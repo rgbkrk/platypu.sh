@@ -19,26 +19,43 @@
         super(props);
         this.state = {
           index: 0,
-          width: 50,
+          width: 500,
+          speed: 1000,
         }
       }
 
-      componentDidMount() {
-        this.intervalId = setInterval(() => {
+      updateImage = () => {
           this.setState(state => ({
             index: (state.index + 1) % images.length,
 					}))
-        }, 1000);
+        };
+
+      componentDidMount() {
+        this.intervalId = setInterval(this.updateImage, this.state.speed);
+      }
+
+      handleSizeChange = (ev) => {
+        this.setState({
+          width: ev.target.value
+        })
+      }
+
+      handleSpeedChange = (ev) => {
+        const speed = parseInt(ev.target.value);
+
+        this.setState(state => {
+          return { speed };
+        },
+        () => {
+          clearInterval(this.intervalId);
+          this.intervalId = setInterval(this.updateImage, speed);
+        })
       }
 
       render() {
         return (<div>
-          <input min="50" max="500" step="25" type="range" onChange={(ev) => {
-
-            this.setState({
-              width: ev.target.value
-            })
-          }} style={{display: 'block'}} />
+          <input defaultValue={this.state.width} min="50" max="1000" step="25" type="range" onChange={this.handleSizeChange} style={{display: 'block'}} />
+          <input defaultValue={this.state.speed} min="50" max="2000" step="25" type="range" onChange={this.handleSpeedChange} style={{display: 'block'}} />
           <img src={images[this.state.index]} width={this.state.width} />
         </div>);
       }
