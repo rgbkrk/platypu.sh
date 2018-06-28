@@ -1,0 +1,42 @@
+<div id="root">
+	<img src="./platash-01.svg" />
+</div>
+
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script type="text/babel">
+    var el = document.getElementById("root");
+
+    const images = [
+      "./platash-01.svg",
+      "./platash-02.svg"
+    ];
+
+    class AnimatedPlatypus extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          index: 0
+        }
+      }
+     
+      componentDidMount() {
+        setInterval(() => {
+          this.setState(state => ({
+            index: (state.index + 1) % images.length
+					})) 
+        }, 1000)
+      }
+   
+      render() {
+        return <img src={images[this.state.index]} />
+      }
+
+    }
+
+
+    ReactDOM.render(<AnimatedPlatypus />, el);
+
+</script>
