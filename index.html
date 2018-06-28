@@ -2,6 +2,13 @@
 	<img src="./platash-01.svg" />
 </div>
 
+<style>
+  html,body {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
 <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -53,23 +60,28 @@
       }
 
       render() {
-        return (<div>
-          <label>Size: {this.state.width}</label>
-          <input
-            defaultValue={this.state.width}
-            min="50" max="1000" step="25" type="range"
-            onChange={this.handleSizeChange}
-            style={{display: 'block'}}
-          />
-          <label>Delay: {this.state.delay}</label>
-          <input
-            defaultValue={this.state.delay}
-            min="10" max="2000" step="25" type="range"
-            onChange={this.handleDelayChange}
-            style={{display: 'block'}}
-          />
-          <img src={images[this.state.index]} width={this.state.width} />
-        </div>);
+        return (
+          <div style={{background: "lightblue", padding: "20px", width: '100%'}}>
+            <label>Size: {this.state.width}</label>
+            <input
+              defaultValue={this.state.width}
+              min="50" max="1000" step="25" type="range"
+              onChange={this.handleSizeChange}
+              style={{display: 'block'}}
+            />
+            <label>Delay: {this.state.delay}</label>
+            <input
+              defaultValue={this.state.delay}
+              min="10" max="2000" step="25" type="range"
+              onChange={this.handleDelayChange}
+              style={{display: 'block'}}
+            />
+            <img
+            src={images[this.state.index]}
+            width={this.state.width}
+            style={{display: 'block', marginRight: 'auto', marginLeft: 'auto'}}/>
+          </div>
+        );
       }
 
     }
