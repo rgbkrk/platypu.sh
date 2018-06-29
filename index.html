@@ -27,7 +27,7 @@
         this.state = {
           index: 0,
           width: 500,
-          delay: 200,
+          speed: 1000,
         }
       }
 
@@ -38,7 +38,7 @@
         };
 
       componentDidMount() {
-        this.intervalId = setInterval(this.updateImage, this.state.delay);
+        this.intervalId = setInterval(this.updateImage, this.convertSpeedToDelay(this.state.speed));
       }
 
       handleSizeChange = (ev) => {
@@ -46,34 +46,43 @@
           width: ev.target.value
         })
       }
+      
+      convertSpeedToFPS = (speed) => {
+        var delay = 2000- speed;
+        return Math.round(100/(delay /500 )) / 100;
+      }
 
-      handleDelayChange = (ev) => {
-        const delay = parseInt(ev.target.value);
+      convertSpeedToDelay = (speed) => {
+        return 2000 - speed;
+      }
+
+      handleSpeedChange = (ev) => {
+        const speed = parseInt(ev.target.value);
 
         this.setState(state => {
-          return { delay };
+          return { speed };
         },
         () => {
           clearInterval(this.intervalId);
-          this.intervalId = setInterval(this.updateImage, delay);
+          this.intervalId = setInterval(this.updateImage, this.convertSpeedToDelay(speed));
         })
       }
 
       render() {
         return (
-          <div style={{background: "lightblue", padding: "20px", width: '100%'}}>
+          <div style={{background: "lightblue", padding: "20px", width: '100%', height:'100%'}}>
             <label>Size: {this.state.width}</label>
             <input
               defaultValue={this.state.width}
-              min="50" max="1000" step="25" type="range"
+              min="50" max="1000" step="10" type="range"
               onChange={this.handleSizeChange}
               style={{display: 'block'}}
             />
-            <label>Delay: {this.state.delay}</label>
+            <label>Flaps per Second (fps): {this.convertSpeedToFPS(this.state.speed)}</label>
             <input
-              defaultValue={this.state.delay}
-              min="10" max="2000" step="25" type="range"
-              onChange={this.handleDelayChange}
+              defaultValue={this.state.speed}
+              min="50" max="2000" step="10" type="range"
+              onChange={this.handleSpeedChange}
               style={{display: 'block'}}
             />
             <img
