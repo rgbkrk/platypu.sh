@@ -6,96 +6,168 @@
   html,body {
     margin: 0;
     padding: 0;
+    cursor: none;
   }
 </style>
 
 <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>
 
 <script type="text/babel">
-    var el = document.getElementById("root");
+var el = document.getElementById("root");
 
-    const images = [
-      "./platash-01.svg",
-      "./platash-02.svg"
-    ];
+const images = ["./platash-01.svg", "./platash-02.svg"];
 
-    class AnimatedPlatypus extends React.Component {
-      constructor(props) {
+class Hand extends React.Component {
+    render() {
+        return (
+            <div
+                onMouseMove={this.onMouseMove}
+                style={{
+                    position: "absolute",
+                    minHeight: "1000px",
+                    minWidth: "1000px",
+                    height: '100%',
+                    width: '100%',
+                    left: this.props.x - 80,
+                    top: this.props.y - 1300,
+                }}
+            >
+                <img src="./platash-03.svg" />
+            </div>
+        );
+    }
+}
+
+class AnimatedPlatypus extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
-          index: 0,
-          width: 500,
-          speed: 1000,
-        }
-      }
-
-      updateImage = () => {
-          this.setState(state => ({
-            index: (state.index + 1) % images.length,
-					}))
+            index: 0,
+            width: 500,
+            speed: 1000
         };
+    }
 
-      componentDidMount() {
-        this.intervalId = setInterval(this.updateImage, this.convertSpeedToDelay(this.state.speed));
-      }
+    updateImage = () => {
+        this.setState(state => ({
+            index: (state.index + 1) % images.length
+        }));
+    };
 
-      handleSizeChange = (ev) => {
+    componentDidMount() {
+        this.intervalId = setInterval(
+            this.updateImage,
+            this.convertSpeedToDelay(this.state.speed)
+        );
+    }
+
+    handleSizeChange = ev => {
         this.setState({
-          width: ev.target.value
-        })
-      }
-      
-      convertSpeedToFPS = (speed) => {
-        var delay = 2000- speed;
-        return Math.round(100/(delay /500 )) / 100;
-      }
+            width: ev.target.value
+        });
+    };
 
-      convertSpeedToDelay = (speed) => {
+    convertSpeedToFPS = speed => {
+        var delay = 2000 - speed;
+        return Math.round(100 / (delay / 500)) / 100;
+    };
+
+    convertSpeedToDelay = speed => {
         return 2000 - speed;
-      }
+    };
 
-      handleSpeedChange = (ev) => {
+    handleSpeedChange = ev => {
         const speed = parseInt(ev.target.value);
 
-        this.setState(state => {
-          return { speed };
-        },
-        () => {
-          clearInterval(this.intervalId);
-          this.intervalId = setInterval(this.updateImage, this.convertSpeedToDelay(speed));
-        })
-      }
-
-      render() {
-        return (
-          <div style={{background: "lightblue", padding: "20px", width: '100%', height:'100%'}}>
-            <label>Size: {this.state.width}</label>
-            <input
-              defaultValue={this.state.width}
-              min="50" max="1000" step="10" type="range"
-              onChange={this.handleSizeChange}
-              style={{display: 'block'}}
-            />
-            <label>Flaps per Second (fps): {this.convertSpeedToFPS(this.state.speed)}</label>
-            <input
-              defaultValue={this.state.speed}
-              min="50" max="2000" step="10" type="range"
-              onChange={this.handleSpeedChange}
-              style={{display: 'block'}}
-            />
-            <img
-            src={images[this.state.index]}
-            width={this.state.width}
-            style={{display: 'block', marginRight: 'auto', marginLeft: 'auto'}}/>
-          </div>
+        this.setState(
+            state => {
+                return { speed };
+            },
+            () => {
+                clearInterval(this.intervalId);
+                this.intervalId = setInterval(
+                    this.updateImage,
+                    this.convertSpeedToDelay(speed)
+                );
+            }
         );
-      }
+    };
 
+    render() {
+        return (
+            <div
+                style={{
+                    background: "lightblue",
+                    padding: "20px",
+                    width: "100%",
+                    height: "100%"
+                }}
+            >
+                <label>Size: {this.state.width}</label>
+                <input
+                    defaultValue={this.state.width}
+                    min="50"
+                    max="1000"
+                    step="10"
+                    type="range"
+                    onChange={this.handleSizeChange}
+                    style={{ display: "block", zIndex: "4"  }}
+                />
+                <label>
+                    Flaps per Second (fps):{" "}
+                    {this.convertSpeedToFPS(this.state.speed)}
+                </label>
+                <input
+                    defaultValue={this.state.speed}
+                    min="50"
+                    max="2000"
+                    step="10"
+                    type="range"
+                    onChange={this.handleSpeedChange}
+                    style={{ display: "block", zIndex: "4" }}
+                />
+                <img
+                    src={images[this.state.index]}
+                    width={this.state.width}
+                    style={{
+                        display: "block",
+                        marginRight: "auto",
+                        marginLeft: "auto"
+                    }}
+                />
+            </div>
+        );
+    }
+}
+
+class App extends React.Component {
+  state = {
+    handX: 0,
+    handY: 0,
+  }
+
+    onMouseMove = ev => {
+        this.setState({
+            handX: ev.clientX,
+            handY: ev.clientY
+        })
     }
 
 
-    ReactDOM.render(<AnimatedPlatypus />, el);
+  render() {
+    return (
+      <div onMouseMove={this.onMouseMove}>
+          <Hand x={this.state.handX} y={this.state.handY}/>
+          <AnimatedPlatypus />
+      </div>
+    );
+  }
+}
 
+ReactDOM.render(
+    <App />,
+    el
+);
 </script>
